@@ -38,7 +38,7 @@
 // File:	dotnet.xml
 // Created:	Sun Nov 21 00:50:30 GMT 2004
 //
-// $Id: dotnet.xml,v 1.1 2004/11/21 20:37:22 atownley Exp $
+// $Id: dotnet.xml,v 1.2 2004/11/23 22:24:10 atownley Exp $
 //
 //////////////////////////////////////////////////////////////////////
 -->
@@ -52,8 +52,36 @@ TE-Code .NET Edition
 </title>
 <body>
 <p>
-This page contains information specific to the .NET Edition of
-the TE-Code libraries.
+This page contains information specific to the .NET edition of the
+TE-Code libraries.  Currently, the .NET edition requires the following
+software to run:
+<ul>
+<li>A .NET runtime and compiler</li>
+<ul>
+<li><a href="http://go-mono.org">Mono</a>, version 1.0.4 or later</li>
+<li><a href="http://www.microsoft.com/net">Microsoft .NET SDK</a>,
+version 1.1</li>
+</ul>
+<li><a href="http://nant.sourceforge.net">NAnt</a>, version 0.85.1786
+(from 2004-11-21) or later</li>
+</ul>
+</p>
+<p>
+I have tested the .NET edition with earlier versions of both Mono and 
+NAnt, but I am currently using the above versions for all testing and
+development work.  I have not yet tried any of the other .NET
+runtimes, but if you do and it works, please let me know (atownley -
+at users sourceforge net).
+</p>
+
+<p>
+At the moment, there are not any articles available which are specific
+to the .NET edition, however, between the examples, the <a
+href="java.html">Java edition articles</a> and the <a
+href="msdn/index.html">API documentation</a>, I think you should be
+able to get started using it.  At some point in the very near future,
+I hope to have some new articles available which are independent
+of the Java edition.
 </p>
 </body>
 </article>
