@@ -38,7 +38,7 @@
 // File:	index.xml
 // Created:	Sat Nov 20 20:08:31 GMT 2004
 //
-// $Id: index.xml,v 1.4 2004/11/29 01:00:39 atownley Exp $
+// $Id: index.xml,v 1.5 2004/12/28 11:32:39 atownley Exp $
 //
 //////////////////////////////////////////////////////////////////////
 -->
@@ -46,31 +46,42 @@
 <page title="Home">
 <menu ref="menu.xml" active="home"/>
 
-<article date="29-Nov-2004" author="atownley" class="latest">
+<article date="28-Dec-2004" author="atownley" class="latest">
 <title>
-Upload of 3.0.0-pre2 to SourceForge
+Upload of Libro into CVS
 </title>
 <body>
 <p>
-The 3.0.0-pre2 release of the Java edition is now available on
-SourceForge for download in both binary and source distributions.
-Changes for this release include a very minor bug-fix to the <a
-href="http://te-code.sourceforge.net/api/com/townleyenterprises/filter/QueryFilter.html">com.townleyenterprises.filter.QueryFilter</a>
-relating to the handling of <code>QueryOperator.GE</code> and
-<code>QueryOperator.LE</code>.
+Libro is a demonstration application which accompanies the
+Java edition of te-common and illustrates production use of
+the features found in the library.
 </p>
 <p>
-This is also the first unified release of the Java versions of
-<code>te-common</code> and <code>te-trace</code>.  Users of previous
-versions should remove any <code>te-trace.jar</code> files they have
-when upgrading to 3.0.0-pre2 as there could be conflicts between which
-classes are actually being used.  At the moment, they are identical,
-but I can't guarantee how long that will be true.
+The application uses several other open source projects to
+provide key pieces of functionality.  Notably, these are:
+
+<ul>
+<li><a href="http://jaxor.sourceforge.net/">Jaxor O/R
+Framework</a></li>
+<li><a href="http://hsqldb.sourceforge.net/">HSQL Database
+Engine</a></li>
+<li><a href="http://logging.apache.org/log4j/">Apache Log4j
+Logging Framework</a></li>
+</ul>
 </p>
+
 <p>
-Other than that, this version includes lots of unit tests for the
-<code>com.townleyenterprises.filter</code> package based on finding
-the bug with GE/LE and wanting it all to work correctly.
+Currently, there is only a bare minimum of functionality
+present in the application, but I expect it will grow as the
+3.0 release is closer to completion.  The intent is that it
+will be released along with the necessary version of
+te-common.
+</p>
+
+<p>
+The libro source is available from CVS by checking out the
+<code>libro</code> module.  The module is available from the
+top of the CVS tree.
 </p>
 </body>
 </article>
@@ -111,7 +122,7 @@ independently for various technologies.
 </tr>
 
 <tr>
-<td class="nobreak" valign="top">Common</td>
+<td class="nobreak" valign="top">Config</td>
 <td>Configuration settings management</td>
 <td align="center"><img src="images/check.gif"/></td>
 <td align="center"><img src="images/check.gif"/></td>
