@@ -38,7 +38,7 @@
 // File:	index.xml
 // Created:	Sat Nov 20 20:08:31 GMT 2004
 //
-// $Id: index.xml,v 1.3 2004/11/23 08:53:34 atownley Exp $
+// $Id: index.xml,v 1.4 2004/11/29 01:00:39 atownley Exp $
 //
 //////////////////////////////////////////////////////////////////////
 -->
@@ -46,17 +46,31 @@
 <page title="Home">
 <menu ref="menu.xml" active="home"/>
 
-<article date="23-Nov-2004" author="atownley" class="latest">
+<article date="29-Nov-2004" author="atownley" class="latest">
 <title>
-Upload of 3.0.0-pre1 to SourceForge
+Upload of 3.0.0-pre2 to SourceForge
 </title>
 <body>
 <p>
-The 3.0.0-pre1 release of the Java edition hit SourceForge in both
-source and binary forms on the 21st, however there was a problem
-uploading just the source package.  This problem has now been fixed
-and both versions of the release are present.  Apologies for any
-problems and/or confusion this may have caused.
+The 3.0.0-pre2 release of the Java edition is now available on
+SourceForge for download in both binary and source distributions.
+Changes for this release include a very minor bug-fix to the <a
+href="http://te-code.sourceforge.net/api/com/townleyenterprises/filter/QueryFilter.html">com.townleyenterprises.filter.QueryFilter</a>
+relating to the handling of <code>QueryOperator.GE</code> and
+<code>QueryOperator.LE</code>.
+</p>
+<p>
+This is also the first unified release of the Java versions of
+<code>te-common</code> and <code>te-trace</code>.  Users of previous
+versions should remove any <code>te-trace.jar</code> files they have
+when upgrading to 3.0.0-pre2 as there could be conflicts between which
+classes are actually being used.  At the moment, they are identical,
+but I can't guarantee how long that will be true.
+</p>
+<p>
+Other than that, this version includes lots of unit tests for the
+<code>com.townleyenterprises.filter</code> package based on finding
+the bug with GE/LE and wanting it all to work correctly.
 </p>
 </body>
 </article>
