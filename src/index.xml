@@ -38,7 +38,7 @@
 // File:	index.xml
 // Created:	Sat Nov 20 20:08:31 GMT 2004
 //
-// $Id: index.xml,v 1.1 2004/11/21 20:37:36 atownley Exp $
+// $Id: index.xml,v 1.2 2004/11/23 08:51:57 atownley Exp $
 //
 //////////////////////////////////////////////////////////////////////
 -->
@@ -48,13 +48,15 @@
 
 <article date="21-Nov-2004" author="atownley" class="latest">
 <title>
-Finally!  A New Look
+Upload of 3.0.0-pre1 to SourceForge
 </title>
 <body>
 <p>
-After entirely too long, I managed to get around to giving the
-site a bit of a makeover.  Hopefully, there will now be a lot
-more information here along with more updates.
+The 3.0.0-pre1 release of the Java edition hit SourceForge in both
+source and binary forms on the 21st, however there was a problem
+uploading just the source package.  This problem has now been fixed
+and both versions of the release are present.  Apologies for any
+problems and/or confusion this may have caused.
 </p>
 </body>
 </article>
