@@ -1,0 +1,14 @@
+<menu name="main">
+<item name="home" link="./index.html">Home</item>
+<item name="news" link="./news.html">News</item>
+<item name="faq" link="./faq.html">FAQ</item>
+<item name="docs" link="./docs.html">Documentation</item>
+<!--
+<item name="history" link="./history.html">History</item>
+-->
+<item name="roadmap" link="./roadmap.html">Roadmap</item>
+<item name="license" link="./LICENSE.html">License</item>
+<item name="download" link="http://sourceforge.net/project/showfiles.php?group_id=82738">Download</item>
+<item name="cvs" link="http://cvs.sourceforge.net/viewcvs.py/te-code/">CVS</item>
+<item name="lists" link="http://sourceforge.net/mail/?group_id=82738">Mailing Lists</item>
+</menu>

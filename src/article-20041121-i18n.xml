@@ -1,0 +1,339 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	article-20041121-i18n.xml
+// Created:	Sun Nov 21 01:59:49 GMT 2004
+//
+// $Id: article-20041121-i18n.xml,v 1.1 2004/11/21 20:37:36 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Easy I18N/L10N Using TE-Common">
+<menu ref="menu.xml"/>
+
+<article date="21-Nov-2004" author="Andrew S. Townley">
+<title>
+Easy I18N/L10N Using TE-Common
+</title>
+<body>
+<p>
+This article will provide a brief overview of the I18N
+facilities provided by TE-Common and illustrate how they may
+be used to localize your programs.
+</p>
+<p>
+The Java platform provides all of the basic building blocks
+for allowing you to write I18N-aware programs.  However, the
+default facilities for managing application resources do not
+easily support sharing of common strings across your
+applications without dealing with a lot of code.  Using the
+<code><a
+href="api/com/townleyenterprises/common/ResourceManager.html">ResourceManager</a></code>
+and <code><a
+href="api/com/townleyenterprises/common/ResourceLoader.html">ResourceLoader</a></code>
+classes can simplify this task a great deal.
+</p>
+<p>
+Imagine that you have an application which consists of 3
+packages, related as in Figure 1, below:
+
+<figure caption="Figure 1: Example Package Hierarchy"
+link="images/article-20041121-i18n-img1.png"/>
+</p>
+
+<p>
+Logically, the core localized versions of the application
+resources should be defined within <code>pkg1</code>, however
+<code>pkg2</code> should be able to not only use these
+strings, but selectively override them if necessary--without
+having to redefine the whole set of resources.
+</p>
+<p>
+Fortunately, this is exactly the problem that the
+<code>ResourceManager</code> and <code>ResourceLoader</code>
+were designed to solve, however they can't do it on their own.
+The answer is to borrow an idea from the <a
+href="http://jakarta.apache.org/tomcat">Jakarta Tomcat</a>
+source and use a package-private class to manage the resources
+for a given package.
+</p>
+
+<h3>
+Accessing the Resources
+</h3>
+<p>
+First, we create the package-private class definition.  The
+one below is from the <code>com.townleyenterprises.tool</code>
+package, but it would work equally well dropped into your own
+projects.  Following the Jakarta example, we'll call it
+<code>Strings</code>.
+</p>
+<p>
+Unfortunately, there's a lot of boilerplate code here that I
+would prefer to get rid of, however, I really haven't come up
+with a better way.  You could create a new class which gets
+wrapped by the package-private class, but I still think you'd
+end up with something very similar to what's below.
+</p>
+
+<example caption="Listing 1: Package-private Strings Class">
+ 1 package com.townleyenterprises.tool;
+ 2
+ 3 import java.util.MissingResourceException;
+ 4
+ 5 import com.townleyenterprises.common.Version;
+ 6 import com.townleyenterprises.common.ResourceManager;
+ 7 import com.townleyenterprises.common.ResourceLoader;
+ 8
+ 9 final class Strings
+10 {
+11         static void addResources(Object obj, String name)
+12         {
+13                 try
+14                 {
+15                         _resources.manage(
+16                                 new ResourceLoader(
+17					obj.getClass(), name));
+18                 }
+19                 catch(MissingResourceException e)
+20                 {
+21                         // ignored
+22                 }
+23         }
+24
+25         static ResourceManager getManager()
+26         {
+27                 return _resources;
+28         }
+29
+30         static String get(String key)
+31         {
+32                 String rc = _resources.getString(key);
+33                 if(rc == null)
+34                         rc =  key;
+35
+36                 return rc;
+37         }
+38
+39         static String format(String key, Object[] args)
+40         {
+41                 String rc = _resources.format(key, args);
+42                 if(rc == null)
+43                         rc = key;
+44
+45                 return rc;
+46         }
+47
+48         private static final ResourceManager _resources = new 
+49						 ResourceManager();
+50
+51         static
+52         {
+53                 _resources.manage(new ResourceLoader(Version.class));
+54                 _resources.manage(new ResourceLoader(Strings.class));
+55         }
+56 }
+</example>
+
+<p>
+In this version, I have removed all of the comments and
+reformatted it so that it fits better in the browser.  To see
+the full version, please download the source code.
+</p>
+
+<p>
+The main methods of interest are the <code>get</code> and
+<code>format</code> methods.  These are the ones you will use
+in your implementation classes to either retrieve a resource
+string or to retrieve a resource format specifier which will
+be formatted according to the current locale.
+</p>
+<p>
+The <code>getManager</code> method is primarily used in the
+rare cases when you need to retrieve a resource for a specific
+locale which differs from the current one.  For the most part,
+you will probably not need this facility, but it <em>is</em>
+there, should you do.
+</p>
+
+<h3>
+How Does It Work?
+</h3>
+
+<p>
+The implementation of the <code>Strings</code> class is
+deceptively simple, but it hides the majority of the work
+being done by the <code>ResourceManager</code> to which it
+delegates (this is another reason I don't know how much
+simpler you can get this class, btw).  The import on line 5 is
+required so we don't have to type so much on line 53.  The
+imports on lines 6 and 7 allow us to use the two main classes
+that make everything work.
+</p>
+
+<p>
+The <code>ResourceManager</code> supports inheritance of
+what eventually boil down to be <code>ResourceBundle</code>
+instances loaded by the <code>ResourceLoader</code> class.
+Each new <code>ResourceLoader</code> provides a new
+<code>ResourceBundle</code> to the
+<code>ResourceManager</code>.  Any existing resource keys
+present in the <code>ResourceManager</code> are re-mapped to
+the value contained in the last
+<code>ResourceLoader</code> instance.  Lines 53 and 54 show
+the resources contained in the package for
+<code>Version.class</code> are merged with those present in
+the current package (loaded by using a reference to the
+<code>Strings.class</code>).  In your own code, you would add
+as many calls to <code>ResourceManager.manage</code> as
+necessary to get the resources you needed.
+</p>
+
+<p>
+In my own code, I've adopted a simple resource naming
+convention which is a bit of a hold-over from my days working
+with Informix in Lenexa.  The convention says that string
+resources which are normal messages should start with
+<code>'s'</code>.  So a message saying, "Hello, world!" might
+be called <code>sHelloWorld</code>.  On the other hand, a
+message which was to be formatted before display should start
+with <code>'f'</code>.  In this way, the message "Hello, {0}!"
+might be called <code>fHello</code>.
+</p>
+<p>
+Normally, I hate this sort of naming convention--especially
+for variables, but in this situation, I find that it easily
+lets me keep track of those strings which have format
+specifiers and those that don't.  Once you start having a lot
+of messages, these things can matter around 4:00AM when you're
+trying to figure out why something doesn't work.
+</p>
+
+<h3>
+Putting It All Together
+</h3>
+
+<p>
+Once the <code>Strings</code> class is present and correctly
+initialized, it is a trivial matter to use it from your own
+code.  For example, this excerpt from the <code>mkcpbat</code>
+utility illustrates the use of the <code>Strings.get</code>
+method to initialize the
+<code>com.townleyenterprises.command.CommandParser</code> used
+to parse the command line arguments.
+</p>
+
+<example caption="Listing 2: Using Strings.get">
+ 81 public final class mkcpbat
+ 82 {
+ 83         public static void main(String[] args)
+ 84         {
+ 85                 new mkcpbat(args);
+ 86         }
+ 87
+ 88         /**
+ 89          * The constructor is the 'main' of the application.
+ 90          *
+ 91          * @param args the command-line arguments
+ 92          */
+ 93
+ 94         private mkcpbat(String[] args)
+ 95         {
+ 96                 // add the resources
+ 97                 Strings.addResources(this, "mkcpbat");
+ 98                 _parser = new CommandParser("mkcpbat",
+ 99                                 Strings.get("sFileArgs"));
+100                 _parser.setExitOnMissingArg(true, -1);
+101                 _parser.addCommandListener(new OptionHandler());
+102                 _parser.setExtraHelpText(
+103                         Strings.get("smkcpbatExtraHelpTextPreamble"),
+104                         Strings.get("smkcpbatExtraHelpTextPostamble"));
+</example>
+<p>
+An interesting point to note is line 97.  This line adds an
+additional resource bundle which is specific to the
+application.  When you have many command-line utilities in the
+same package, but with slightly different resource
+requirements, this technique is a good way to ensure that for
+the execution of the JVM, the resources needed by the tool are
+always on the "top" of the stack.
+</p>
+
+<p>
+In a similar fashion to the above listing, this error handling
+routine uses the <code>Strings.format</code> method to handle
+the formatting of exceptions before printing them to
+<code>stderr</code>.
+</p>
+<example caption="Listing 3: Using Strings.format">
+125   catch(IOException e)
+126   {
+127           System.err.println(Strings.format("fGeneralError",
+128                    new Object[] { e.getMessage() }));
+129    
+130           if(_verbose.getMatched())
+131           {
+132                    e.printStackTrace();
+133           }
+134           System.exit(-1);
+135   }
+</example>
+
+<p>
+Should your application need access to images or other types
+of resources, it is a simple matter to add in a new method to
+the <code>Strings</code> class which will provide them.  However, it
+might be strange to be asking the <code>Strings</code> class
+to give you an image, but this is a case where the overhead of
+an additional class might not be worth the effort.
+</p>
+
+<p>
+Hopefully, you now have an overview of how you can introduce
+i18n handling into your applications in a straightforward
+fashion.  The technique using the <code>Strings</code> class
+is repeatable for every package in your application for which
+you need localized resources.  For more details, you can look
+at the source code for TE-Common.  I have provided an
+implementation of this idiom in each of the packages using
+resources, so along with this article, it should allow you to
+use this technique in your own code.
+</p>
+</body>
+</article>
+</page>

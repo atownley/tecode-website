@@ -1,0 +1,173 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	roadmap.xml
+// Created:	Sun Nov 21 19:49:37 GMT 2004
+//
+// $Id: roadmap.xml,v 1.1 2004/11/21 20:37:22 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Roadmap">
+<menu ref="menu.xml" active="roadmap"/>
+
+<article class="none">
+<title>
+TE-Code Roadmap
+</title>
+<body>
+<p>
+The current plans for the two editions of TE-Code are to
+continue to stabilize them in preparation for a 3.0 release.
+Originally, this release targeted for Q4 2004, but several
+things have happened which are likely to cause this date to
+not be met.  The rest of this page discusses the plans for the
+near future of the two editions.
+</p>
+
+<h3>
+The Java Edition
+</h3>
+
+<p>
+At the present time, the main outstanding tasks to be
+completed before the 3.0 release are (in no particular order):
+
+<ul>
+<li>Extend the JUnit test suites</li>
+<li>Complete the port of the configuration classes from the
+.NET edition</li>
+<li>Complete work on the validator package</li>
+<li>Update the existing JavaDoc documentation</li>
+<li>Ensure compatibility with J2SE 5.0</li>
+<li>Merge te-code and te-trace into one distribution</li>
+<li>Create additional examples</li>
+</ul>
+</p>
+
+<p>
+Other than the inclusion of the new configuration mechanism
+and completing the work on the validator package, no new code
+is expected to be added to the library.  It is not yet clear,
+however, how long it will take for this to happen as I am only
+able to work on new development outside of normal work hours.
+</p>
+
+<p>
+The merge of te-code and te-trace should be straightforward,
+but it will also result in some of the classes using
+alternative mechanisms for debugging to be migrated to use the
+trace package.  I do not foresee this being a large amount of
+work.
+</p>
+
+<p>
+The current target for a final 3.0 release of the Java edition
+is Q1 2005.  Hopefully, it can be closer to the middle than
+the end.
+</p>
+
+<h3>
+The .NET Edition
+</h3>
+
+<p>
+The current code in the .NET edition is stable, but it does
+not yet have a feature parity to the Java Edition.  That being
+said, some aspects of the .NET edition are more advanced (the
+configuration system, for example) and have caused changes to
+be made to the codebase of the Java edition.
+</p>
+
+<p>
+The key outstanding points to be addressed before a 3.0
+release are (in no particular order):
+
+<ul>
+<li>Adding support for "native" XML configuration providers</li>
+<li>Adding support for Windows Registry configuration providers</li>
+<li>Implement the Filter package from the Java edition</li>
+</ul>
+</p>
+
+<p>
+If the above items could be completed, while not being exactly
+feature-for-feature compatible with the Java edition, the core
+functionality of the library will exist across both editions.
+Once this has been done, the following items are high on my
+priority list for additions to the .NET edition:
+
+<ul>
+<li>Examine the persistence package and determine if it makes
+sense to implement for .NET</li>
+<li>Add a generic layout manager system similar to that
+described in <a
+href="http://www.csharphelp.com/archives/archive7.html">Layout
+Managers in C#</a></li>
+<li>Provide a similar, configuration-driven method of defining
+user interfaces as in the Java edition</li>
+</ul>
+</p>
+
+<p>
+I don't believe that implementing the remaining functionality
+for the 3.0 release will take that much time.  However, I
+don't think it will happen before Q1 2005 unless I get a lot
+more free time than I currently have.  The code that is there
+is stable and should be isolated from changes during the
+completion of the 3.0 feature set.
+</p>
+
+<h3>
+The Python Edition
+</h3>
+
+<p>
+The Python code which exists hasn't been touched in quite a
+while.  I thought that I was going to be using Python again
+for a small project which would cause some of the rest of the
+library to be implemented, but this project has not
+materialized.  Until I actually have something to do with
+Python, I don't think the scope of the library will change.
+Currently, it only contains an implementation of the
+<code>Traceable</code> interface an a version of
+<code>ErrorTrace</code> from 2002.
+</p>
+</body>
+</article>
+</page>

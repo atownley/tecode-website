@@ -1,0 +1,88 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	java.xml
+// Created:	Sun Nov 21 00:47:47 GMT 2004
+//
+// $Id: java.xml,v 1.1 2004/11/21 20:37:22 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Java Edition">
+<menu ref="menu.xml" />
+
+<article class="none">
+<title>
+TE-Common Java Edition
+</title>
+<body>
+<p>
+The Java edition currently has the following software run-time
+requirements:
+<ul>
+<li>Java 2 Platform, version 1.4.2_05</li>
+</ul>
+</p>
+<p>
+In order to build the distribution from source, you must have
+a supported version of the J2SDK along with either 1.5.x or
+1.6.x of <a href="http://jakarta.apache.org/ant">Jakarta
+Ant</a>.  Obviously, you only need a supported JRE to run
+applications which use the library.
+</p>
+<p>
+I have not yet tested any of the TE-Code libraries using J2SE
+5.0 ("Tiger"), however, I would expect that it should work.
+</p>
+
+<h3>
+Available Articles
+</h3>
+
+<ul>
+<li><a href="article-20041121-cli.html">Object-Oriented
+Command Line Interfaces</a> (2004-11-21)</li>
+<li><a href="article-20041121-i18n.html">Easy I18N/L10N using
+TE-Common</a> (2004-11-21)</li>
+<li><a href="article-20030608-cli.html">Java Command-line
+Argument Handling</a> (2003-06-08)</li>
+</ul>
+
+</body>
+</article>
+</page>

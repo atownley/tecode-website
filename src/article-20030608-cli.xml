@@ -1,0 +1,352 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	article-20030608-cli.xml
+// Created:	Sun Nov 21 01:07:19 GMT 2004
+//
+// $Id: article-20030608-cli.xml,v 1.1 2004/11/21 20:37:15 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Java Command-line Argument Handling">
+<menu ref="menu.xml"/>
+
+<article date="08-Jun-2003" author="Andrew S. Townley">
+<title>
+Java Command-line Argument Handling
+</title>
+<body>
+<editor>
+This is the original article provided with the 2.0-Beta2
+release.  It is still relevant for background information and
+how to do "classic" command-line argument handling, but
+it does not reflect the current way the library should be
+used.  Please bear this in mind when reading the article.
+[Ed.]
+</editor>
+<p>
+This example is lifted from the documentation for the <a
+href="api/com/townleyenterprises/command/package-summary.html">com.townleyenterprises.command</a>
+package.  The example illustrates the majority of the
+features present in the library including:
+
+<ul>
+<li>Support for both long and short option matching</li>
+<li>Support for automatically generated help and usage (a la
+Red Hat's popt library)</li>
+<li>Support for matching arguments more than once on the
+same command line</li>
+<li>Providing customized handling of arguments when they are
+matched</li>
+</ul>
+</p>
+
+<p>
+Step 1:  Import the required classes (normally, you wouldn't just
+import everything).
+</p>
+
+<example>
+import java.util.*;
+import com.townleyenterprises.command.*;
+</example>
+
+<p>
+Step 2:  Define a <code>CommandOption</code> class that will
+override the default action when the option is matched.  In
+this case, the class supports options that may be specified
+more than once on the command line.
+</p>
+<p>
+It is important to note that for the custom option to have
+the expected behavior later in the program, the parent class
+must be given the chance to recognize that the option has
+been matched.  This is done by calling
+<code>super.optionMatched(arg)</code> in the example.
+</p>
+<p>
+This step (or something similar) is only required if the
+default behavior of the <code>CommandOption</code> class is
+not sufficient for the needs of your application.  In this
+case, the application requires supporting the same option
+more than once on the command line.
+</p>
+
+<example>
+class RepeatableOption extends CommandOption
+{
+	RepeatableOption(String longName, char shortName,
+			String argHelp, String argDesc)
+	{
+		super(longName, shortName, true, argHelp, argDesc);
+	}
+
+	public void optionMatched(String arg)
+	{
+		super.optionMatched(arg);
+		_args.add(arg);
+	}
+
+	List getArgs()
+	{
+		return _args;
+	}
+
+	ArrayList	_args = new ArrayList();
+}
+</example>
+
+<p>
+Step 3:  Provide a class that implements the
+<code>CommandListener</code> interface.  This class will be
+responsible for providing all of the options to the
+<code>CommandParser</code>.  In the event where derived
+classes wish to inherit a common set of options, more than
+one listener can be registered with the command parser.
+Each listener provides a specific set of options which may
+be matched and displayed in the automatically generated help
+and usage text.
+</p>
+
+<p>
+In this case, three options are defined (all of which have
+both short and long forms).  The parameters for creating the
+options are very similar to the Red Hat popt library which
+was a big influence on the behavior of the package.  They
+include:
+
+<ol>
+<li>the long option name</li>
+<li>the optional short option</li>
+<li>if the parameter expects an argument</li>
+<li>the help description for the argument</li>
+<li>the help description for the whole option</li>
+</ol>
+</p>
+<p>
+The options could be created as anonymous object instances,
+but then it would require additional programmer effort to
+ensure that they were correctly handled.  For more
+information on this topic, please refer to the package
+documentation.
+</p>
+
+<example>
+public class feather implements CommandListener
+{
+	static CommandOption create = new CommandOption("create", 'c',
+			false, null, "Create a new archive.");
+	static CommandOption file = new CommandOption("file", 'f',
+			true, "&lt;filename&gt;",
+			"Specify the name of the archive"
+				+ " (default is stdout).");
+	static RepeatableOption xclude = new RepeatableOption("exclude",
+			'X', "[ &lt;filename&gt; | &lt;directory&gt; ]",
+			"Exclude the named file or directory"
+				+ " from the archive");
+	
+	static	CommandOption[] opts = { create, file, xclude };
+
+	public CommandOption[] getOptions()
+	{
+		return opts;
+	}
+
+	public void optionMatched(CommandOption opt, String arg)
+	{
+		// nothing to do
+	}
+
+	public String getDescription()
+	{
+		return "feather options";
+	}
+}
+</example>
+
+<p>
+Step 4:  Parse the options.  The main difference between
+using the package in an object-oriented manner rather than
+using the "classic" approach for command line parsing is the
+lack of large conditional blocks to determine if the option
+has been matched.  Using the
+<code>com.townleyenterprises.command</code> package allows
+the the framework to take care of 90% of the work of parsing
+command line options on behalf of the developer.  This means
+that the application is smaller, easier to change and logic
+for parameter handling can be shared across utilities in the
+same project or between totally different projects without
+resorting to "cut-n-paste" code reuse.
+</p>
+
+<p>
+Rather than making the programmer track the options and the
+arguments, these are managed internally.  Each 
+<code>CommandOption</code> instance contains a boolean to
+indicate if it has been matched, and, if it was expecting an
+argument, the argument which was supplied.  This mechanism
+can result in the elimination of nearly 2/3 of the code
+which is often required to perform the same command line
+parsing.
+</p>
+
+<example>
+public static void main(String[] args)
+{
+	CommandParser clp = new CommandParser("feather", "FILE...");
+	clp.addCommandListener(new feather());
+	clp.parse(args);
+
+	if((file.getMatched() || xclude.getMatched()) &amp;&amp;
+			!create.getMatched())
+	{
+		System.err.println("error:  nothing to do");
+		clp.usage();
+		System.exit(-1);
+	}
+
+	String[] largs = clp.getUnhandledArguments();
+	if(create.getMatched() &amp;&amp; largs.length == 0)
+	{
+		System.err.println("error:  refusing to create empty archive.");
+		clp.usage();
+		System.exit(-2);
+	}
+	
+	for(int i = 0; i &lt; largs.length; ++i)
+	{
+		System.out.println("largs[" + i + "] = '" +
+			largs[i] + "'");
+	}
+
+	if(xclude.getMatched())
+	{
+		System.out.println("Excluded:");
+
+		List xas = xclude.getArgs();
+		for(Iterator j = xas.iterator(); j.hasNext();)
+		{
+			System.out.println(j.next());
+		}
+	}
+}
+</example>
+
+<p>
+Step 5:  Run the program.  By default, the
+<code>CommandParser</code> has the equivalent to the popt
+autohelp feature enabled.  This results in the generation of
+output which is nearly equivalent to that of the Red Hat
+popt library.
+</p>
+
+<p>
+To print the long help message for the application, the
+<code>--help</code> and <code>-?</code> options are
+automatically recognized.
+</p>
+
+<example>
+$ java feather --help
+Usage:  feather [OPTION...] FILE...
+
+feather options:
+  -c, --create                     Create a new archive.
+  -f, --file=&lt;filename&gt;            Specify the name of the archive (default is
+                                   stdout).
+  -X, --exclude=[ &lt;filename&gt; | &lt;directory> ] Exclude the named file or directory
+                                   from the archive
+
+Help options:
+  -?, --help                       show this help message
+  --usage                          show brief usage message
+</example>
+
+<p>
+In a similar manner, specifying the <code>--usage</code>
+option will produce summary information about the options.
+</p>
+
+<example>
+$ java feather --usage
+Usage:  feather [-c|--create] [-f|--file=&lt;filename&gt;]
+        [-X|--exclude=[ &lt;filename&gt; | &lt;directory&gt; ]] [-?|--help] [--usage]
+        FILE...
+</example>
+
+<p>
+Finally, give the program something useful to do and prove
+that it really recognizes all of the command-line options.
+</p>
+
+<example>
+$ java feather -X /tmp -X /var -c -f out.feather /
+largs[0] = '/'
+Excluded:
+/tmp
+/var
+</example>
+
+<p>
+That's all there is to it.  The core classes allow the developer to
+focus on what the utility is supposed to accomplish, not spend a lot
+of time writing mindless, boilerplate code.
+</p>
+
+<p>
+This library owes a great deal to Red Hat's popt parsing library.  I
+used popt quite a bit in the past for C and C++ command line parsing,
+but, while I thought it was easier than some, there were still some
+things which I thought were harder than they should be.  Of course,
+popt was written for C and not C++ or Java and so can't be faulted for
+taking a procedural approach.  None of the existing libraries for
+solving the problem in Java quite seemed "natural", for want of a
+better word, so this package is the result of me trying to build a
+better mousetrap.  Hopefully, this example points out some of the
+advantages of this package over some of the other ways of solving the
+problem.
+</p>
+
+<p>
+The complete source code for the above example is included in the
+<code>examples</code> directory of both the source and binary
+distributions of the package.
+</p>
+</body>
+</article>
+</page>

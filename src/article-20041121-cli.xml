@@ -1,0 +1,836 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	article-20041121-cli.xml
+// Created:	Sun Nov 21 01:27:34 GMT 2004
+//
+// $Id: article-20041121-cli.xml,v 1.1 2004/11/21 20:37:29 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Object-Oriented Command Line Interfaces">
+<menu ref="menu.xml"/>
+
+<article date="21-Nov-2004" author="Andrew S. Townley">
+<title>
+Object-Oriented Command Line Interfaces
+</title>
+<body>
+<p>
+In this article, I attempt to cover the changes in the
+<code>com.townleyenterprises.command</code> package since the
+2.0-Beta 2 release and highlight what I think to be the most
+effective way of handling command-line arguments.  Once again,
+I will be using the example from my <a
+href="article-20030608-cli.html">first article</a> which is a
+program called <code>feather</code>.
+</p>
+<p>
+Since the first release of the library, the following features
+have been added:
+
+<ul>
+<li>New abstract and default CommandListener classes</li>
+<li>I18N/L10N support</li>
+<li>Support for POSIX-style options</li>
+<li>Support for joined options</li>
+<li>Support for delimited and repeatable options</li>
+<li>Autohelp preamble and postamble messages</li>
+<li>Support for logical option constraints</li>
+<li>Support for "active" command options</li>
+</ul>
+</p>
+<p>
+The result of these changes is that the library is now easier
+to use and goes further to encapsulate the operations of
+individual options than before, making the code easier to
+write, debug and maintain.
+</p>
+<p>
+With the 3.0.0 release, using the "classic" command-line
+argument handing will be deprecated as an idiom, but I am not
+going to actually deprecate the methods.  It's still a valid
+way to approach the problem, but you don't get any of the
+benefits of encapsulation and you still have some really long
+and complicated <code>main()</code> routines.  Instead, the
+focus is on using the library the way it exists today.
+</p>
+
+<h3>
+Using the DefaultCommandListener Class
+</h3>
+
+<p>
+After using the original library for several projects, it
+became clear that one of the things I was trying to solve, to
+limit the amount of boilerplate code, really was not as good
+as it could have been.  In practice, I ended up with a lot of
+nested inner classes that existed just to provide the array of
+<code>CommandOption</code> instances to the parser along with
+a description.  Eventually, I decided that there had to be a
+better way, so I created a new class to handle this function:
+<code>DefaultCommandListener</code>.
+</p>
+<p>
+Historically, the <code>CommandListener</code> interface was
+provided to support the "classic" model of command-line
+argument handling as described in the <a
+href="api/com/townleyenterprises/command/package-summary.html">package
+summary</a>.  In moving to a full OO model, the importance of
+the listener interface changed because the handling of the
+options wasn't done via the Observer pattern, rather it was
+now done actively using the
+<code>CommandOption.optionMatched</code> method, and later
+using the full Command pattern via the new
+<code>CommandOption.execute</code> method.  It was also a
+little clumsy using the older approach to provide useful
+command option groupings within the same application.  All
+this has now changed due to the
+<code>DefaultCommandListener</code> class.
+</p>
+<p>
+Using the <code>feather3.java</code> class distributed as part
+of the examples, you can see how much simpler things become.
+Listing 1 shows the declaration of two different groups of
+<code>CommandOption</code> instances which represent different aspects
+of the program's functionality.
+</p>
+
+<example caption="Listing 1:  Declaring Separate Option Groups">
+139     private CommandOption[] _mainopts = {
+140                 _create, _extract, _file, _verbose, _xclude };
+141
+142     private CommandOption[] _examples = { _display, _options };
+</example>
+
+<p>
+These groups can now be associated with different headings for
+the autohelp during the initialization of the
+<code>CommandParser</code> instance in the application's
+constructor.  Listing 2 shows how this is done.
+</p>
+
+<example caption="Listing 2:  Using the DefaultCommandListener">
+158         _parser.addCommandListener(
+159             new DefaultCommandListener("feather options", _mainopts));
+160         _parser.addCommandListener(
+161             new DefaultCommandListener("Example options", _examples));
+</example>
+
+<p>
+When the program is executed and asked to show the usage
+summary, the following output is now created:
+</p>
+
+<example caption="Figure 1: Autohelp Output">
+feather options:
+  -c, --create                     create a new archive
+  -x, --extract                    extract files from the named archive
+  -f, --file=ARCHIVE               specify the name of the archive (default is
+                                   stdout)
+  -v, --verbose                    print status information during execution
+  -X, --exclude=[ FILE | DIRECTORY ] exclude the named file or directory from
+                                   the archive
+ 
+Example options:
+  -display DISPLAY                 specify the display on which the output
+                                   should be written
+  -DPROPERTY=VALUE[,PROPERTY=VALUE...] set specific run-time properties
+ 
+Help options:
+  -?, --help                       show this help message
+  --usage                          show brief usage message
+</example>
+
+<h3>
+New Internationalization Support
+</h3>
+
+<p>
+Previous versions of the library used hard-coded English
+messages within the <code>CommandParser</code> to display
+various errors and other information (including autohelp).  By
+using the techniques illustrated in the article <em><a
+href="article-20041121-i18n.html">Easy I18N/L10N Using
+TE-Common</a></em>, the <code>CommandParser</code> is now
+fully localizable by creating new properties and placing them
+in the <code>resources</code> directory of the source
+structure.  At the moment, there are only English resources,
+but additional translations are welcome.
+</p>
+
+<h3>
+Supporting POSIX-style Options
+</h3>
+
+<p>
+One of the features I knew needed to be part of the library to
+gain wide acceptance was support for POSIX-style options.  At
+preset, these are mostly supported, however the abbreviation
+of the option name supported by some libraries is not present.
+</p>
+
+<p>
+POSIX-style options are options similar to those found in the
+X window system, the <code>javac</code> compiler from Sun and
+utilities such as <a
+href="http://jakarta.apache.org/ant">Jakarta's Ant build
+tool</a>.  These options start with a single <code>-</code>
+and have one or more letters.  They are similar to the GNU
+long option style, but exist in enough places that any library
+should support both.
+</p>
+
+<p>
+Another related feature of POSIX-style options is that you can
+combine options which do not require an argument together into
+a single "word".  The program then must break apart the
+options to deal with the separately.  Previously, if you
+wanted to verbosely create an archive using
+<code>feather</code>, you had to separate the options and use
+<code>java feather -c -v -f foo</code>.  With the current
+version, options behave as you would expect and you can now
+type <code>java feather -cvf foo</code> instead.
+</p>
+
+<h3>
+Joined, Delimited and Repeatable Options
+</h3>
+
+<p>
+A command option such as <code>gcc</code>'s <code>-Wall</code>
+is an example of a joined option because the switch (the
+<code>'W'</code>) and the option value (the
+<code>'all'</code>) are given as a single "word" to the
+command parser.  Full support for these types of options is
+now present in the library.
+</p>
+
+<p>
+Often, joined options may have multiple values.  Two different
+examples of this are supported by the <code>java</code>
+command from Sun.  The first type is used to specify runtime
+property values to the JVM.  The option is only allowed to be
+specified once, but you can set multiple properties at the
+same time.  This type of option can be called both "joined"
+and "delimited" since it can have multiple values, each
+delimited by a comma.
+</p>
+
+<p>
+The second type of example is the various <code>-X</code>
+options supported by the <code>java</code> command.  These
+options are both "joined" and "repeatable" because the main
+option, <code>'X'</code> may be specified multiple times on
+the command line.
+</p>
+
+<p>
+Both of these usage scenarios are now fully supported by the
+classes in the library.  Originally, the
+<code>Repeatable</code> command option was implemented as an
+example in the first version of <code>feather</code>, but it
+has been added to the library and expanded accordingly.  The
+<code>feather3.java</code> program now uses examples of both
+these types of options.
+</p>
+
+<h3>
+More Help from AutoHelp
+</h3>
+
+<p>
+Another feature present in programs using the GNU
+<code>longopt</code> library is often additional descriptive
+text above and below the options description intended to
+provide examples or additional information regarding the meaning
+of the options.  The GNU <code>tar</code> program is a good
+example of this technique.
+</p>
+
+<p>
+RedHat's <code>popt</code> library does not have an equivalent
+to this facility (as far as I'm aware to date), but it is
+something which can be a big help to end users on systems
+without built-in documentation systems like <code>man</code>.
+By providing additional information, you can give the user
+just a bit more help than would otherwise be contained in the
+output of <code>somecommand --help</code>.
+</p>
+
+<p>
+This additional information is provided through the use of a
+new attribute of the <code>CommandParser</code> class:
+<code>extraHelpText</code>.  This attribute allows you to
+provide a preamble and postamble, or just one of them.  The
+preamble appears before the main autohelp text and the
+postamble appears after the autohelp text.  Using literal
+strings can get quite verbose if you do it in-line, so it is
+recommended that you retrieve this information from a resource
+bundle somehow.  The <code>feather3.java</code> does not do
+this for the sake of clarity, but it would not be wise to use
+this approach in production code.
+</p>
+
+<p>
+Once the preamble/postamble has been set, it will be displayed
+as in Figure 2, which was generated from running <code>java
+feather3 --help</code>.
+</p>
+
+<example caption="Figure 2:  Displaying Preamble and Postamble
+Help Text">
+$ java feather3 --help
+Usage:  feather [OPTION...] FILE...
+ 
+This is the TE-Code feather program.  It is used to illustrate the features of
+the com.townleyenterprises.command package.
+ 
+Examples:
+  # create archive.feather from files one, two, three and four
+  feather -cvf archive.feather one two three four
+ 
+  # exclude files five and six from an archive
+  feather -cvf archive.feather -X five -X six one two three
+ 
+All options are not required unless otherwise stated in the description.
+ 
+feather options:
+  -c, --create                     create a new archive
+  -x, --extract                    extract files from the named archive
+  -f, --file=ARCHIVE               specify the name of the archive (default is
+                                   stdout)
+  -v, --verbose                    print status information during execution
+  -X, --exclude=[ FILE | DIRECTORY ] exclude the named file or directory from
+                                   the archive
+ 
+Example options:
+  -display DISPLAY                 specify the display on which the output
+                                   should be written
+  -DPROPERTY=VALUE[,PROPERTY=VALUE...] set specific run-time properties
+ 
+Help options:
+  -?, --help                       show this help message
+  --usage                          show brief usage message
+ 
+This utility does not actually create an archive.
+Any bugs in the software should be reported to the te-code mailing lists.
+ 
+http://te-code.sourceforge.net
+</example>
+
+<h3>
+Using Option Constraints
+</h3>
+
+<p>
+Historically, in command-line applications, a large body of
+code is devoted to determining if conflicting options have
+been specified, or if an option had a dependency on another
+one, that both were specified by the user.  In the event that
+any of these were not true, an error message was given to the
+user so that they could try again.
+</p>
+
+<p>
+With the 3.0.0-pre1 release of the library, this code is
+normally not necessary in the majority of instances.  Instead
+of writing a lot of <code>if</code> statements to determine if
+the correct options were given, you can now tell the
+<code>CommandParser</code> how to detect these error cases
+using <strong>logical option constraints</strong>.
+</p>
+
+<p>
+By default, the library provides the following constraint
+types (see the <a href="api/index.html">API documentation</a>
+for more information):
+
+<ul>
+<li><strong>MutexOptionConstraint</strong> &#8212; used to specify the mutual
+exclusion of two options</li>
+<li><strong>OptionConstraint</strong> &#8212; the base class for option
+constraints</li>
+<li><strong>RequiredOptionConstraint</strong> &#8212; used to specify the
+option must be specified</li>
+<li><strong>RequiresAnyOptionConstraint</strong> &#8212; used to specify a
+dependency between command options</li>
+</ul>
+</p>
+
+<p>
+Using the capabilities of <code>feather</code> as an example,
+you cannot logically specify that an archive should be created
+and extracted using the same command.  Ordinarily, you would
+have to write code similar to that in Listing 3 to detect this
+condition.
+</p>
+
+<example caption="Listing 3: Traditional Option Exclusion
+Checking">
+if(_create.getMatched() &amp;&amp; _extract.getMatched())
+{
+	System.err.println("error:  cannot specify both -x and -c.");
+	System.exit(-500);
+}
+</example>
+
+<p>
+However, the same test can be accomplished by using a
+<code>MutexOptionConstraint</code> as illustrated Listing 4.
+</p>
+
+<example caption="Listing 4:  Use of MutexOptionConstraint">
+165         _parser.addConstraint(
+166             new MutexOptionConstraint(-500, _create, _extract));
+</example>
+
+<p>
+The <code>if</code> statement in Listing 3 has been replaced
+with an instance of the <code>MutexOptionConstraint</code>
+which says that if both are specified, the program should exit
+with a <code>-500</code> return code.  You can imagine that in
+a large program with several exclusive options, being able to
+replace a 5-line <code>if</code> statement with one line of
+code might be <em>a good thing</em>.
+</p>
+
+<p>
+Probably the other most commonly used constraint is the
+<code>RequiresAnyOptionConstraint</code>.  For example, in
+<code>feather</code>, you can only specify the file option if
+you've chosen create or extract an archive.  Likewise, you can only
+specify the exclude option if you've chosen to create or
+extract an archive.  An example of this type of traditional
+check is shown in Listing 5 (from <code>feather.java</code>).
+</p>
+
+<example caption="Listing 5:  Traditional Option Relation
+Checking">
+64         if((file.getMatched() || xclude.getMatched()) &amp;&amp;
+65                 !create.getMatched())
+66         {
+67             System.err.println("error:  nothing to do");
+68             clp.usage();
+69             System.exit(-1);
+70         }
+</example>
+
+<p>
+The code in Listing 5 can be replaced with the code in Listing
+6 (from <code>feather3.java</code>) by using a
+<code>RequiresAnyOptionConstraint</code> instance.
+</p>
+
+<example caption="Listing 6:  Use of
+RequiresAnyOptionConstraint">
+167         _parser.addConstraint(
+168             new RequiresAnyOptionConstraint(-501, _file,
+169                 new CommandOption[] { _create, _extract }));
+</example>
+
+<p>
+In Listing 6, the option constraint indicates that the file
+option requires any of the create and extract options, thus
+automatically performing the check previously coded in Listing
+5.  Any number of these constraints can be added and will be
+evaluated during the <code>CommandParser</code>'s
+<code>executeCommands</code> method.  From the implementation
+point of view, the option constraints are a big improvement on
+hand coding these tests.  It also means that it's easier to
+add new options and tests, because they are provided as
+relationships between options.
+</p>
+
+<p>
+Some examples of the output generated when the constraints are
+violated is provided in Figure 3.
+</p>
+
+<example caption="Figure 3:  Option Constraints in Action">
+$ java feather3 -cxf archive.tar
+error:  cannot specify both 'create' and 'extract'.  Exiting.
+Usage:  feather [-c|--create] [-x|--extract] [-f|--file ARCHIVE]
+        [-v|--verbose] [-X|--exclude [ FILE | DIRECTORY ]]
+        [-display DISPLAY] [-DPROPERTY=VALUE[,PROPERTY=VALUE...]]
+        [-?|--help] [--usage] FILE...
+$ java feather3 -f archive.tar
+error:  option 'file' requires one of:  'create', 'extract'.  Exiting.
+Usage:  feather [-c|--create] [-x|--extract] [-f|--file ARCHIVE]
+        [-v|--verbose] [-X|--exclude [ FILE | DIRECTORY ]]
+        [-display DISPLAY] [-DPROPERTY=VALUE[,PROPERTY=VALUE...]]
+        [-?|--help] [--usage] FILE...
+$ java feather3 -X some/path
+error:  option 'exclude' requires one of:  'create', 'extract'.  Exiting.
+Usage:  feather [-c|--create] [-x|--extract] [-f|--file ARCHIVE]
+        [-v|--verbose] [-X|--exclude [ FILE | DIRECTORY ]]
+        [-display DISPLAY] [-DPROPERTY=VALUE[,PROPERTY=VALUE...]]
+        [-?|--help] [--usage] FILE...
+</example>
+
+<p>
+The final option constraint is the
+<code>RequiredOptionConstraint</code>.  Normally, if an option
+is required, it should be specified in the interface contract.
+However, sometimes this isn't really practical and you will
+have a clearer contract if you instead include an option which
+is required.  The <code>RequiredOptionConstraint</code> is
+useful in just these circumstances.  It will cause an error if
+the option it "watches" is not present on the command line.
+</p>
+
+<h3>
+Implementing the Command Pattern
+</h3>
+
+<p>
+The final step in fully using an OO approach to handling
+command-line arguments is to make the
+<code>CommandOption</code> instances responsible for
+performing some task.  This is quite a departure from the
+traditional approach, but it simplifies the application code
+considerably.  Admittedly, it simply moves things around, but
+if there are a number of commands the application can perform,
+it does assist in organizing the source in a more logical
+fashion.  Also, the encapsulation only goes so far, because
+the implementation of the command may require references to
+other options that may have an impact on how the command is
+implemented.
+</p>
+
+<p>
+Listing 7 shows the implementation of the create option
+instance.  Like the other options in the program, the actual
+instance is an anonymous inner class rather than a specific
+derived class, but, like implementing Swing
+<code>Action</code> instances, this is an implementation
+preference and has little impact on how the solution works.
+</p>
+
+<example caption="Listing 7:  Implementing an Active
+CommandOption">
+61     private CommandOption _create = new CommandOption("create",
+62                     'c', false, null,
+63                     "create a new archive") {
+64         public void execute() throws Exception
+65         {
+66             String[] largs = _parser.getUnhandledArguments();
+67
+68             if(largs.length == 0)
+69             {
+70                 System.err.println("error:  refusing to create empty archive.");
+71                 _parser.usage();
+72                 System.exit(-2);
+73             }
+74
+75             if(_verbose.getMatched() &amp;&amp; _file.getMatched())
+76             {
+77                 System.out.println("creating archive " + _file.getArg());
+78             }
+79
+80             for(int i = 0; i &lt; largs.length; ++i)
+81             {
+82                 if(_verbose.getMatched())
+83                     System.out.println("adding " + largs[i]);
+84             }
+85
+86             if(_xclude.getMatched())
+87             {
+88                 if(_verbose.getMatched())
+89                 {
+90                     for(Iterator i = _xclude.getArgs().iterator(); i.hasNext();)
+91                     {
+92                         System.out.println("excluded " + i.next());
+93                     }
+94                 }
+95             }
+96         }
+97     };
+</example>
+
+<p>
+Lines 61-63 create the instance the same as in the previous
+version of the example.  However, lines 64-96 are the
+implementation of the create action.  The interactions between
+the active <code>CommandParser</code> and the
+<code>CommandOption</code> instances is straightforward and
+occurs in the following order:
+
+<ol>
+<li>The parser is initialized with the options to accept</li>
+<li>The parser parses the arguments to the program</li>
+<li>Option constraints are added</li>
+<li>The parser executes all command options matched during the
+parse</li>
+</ol>
+</p>
+
+<p>
+The above sequence does not have any negative effects if some
+options do not define an <code>execute</code> method because
+the default implementation in <code>CommandOption</code> does
+nothing.  The options are processed in the order they are
+added.
+</p>
+
+<h3>
+Putting It All Together
+</h3>
+
+<p>
+Listing 8 shows the entire source for the
+<code>feather3.java</code> program so you can see how
+everything fits together.
+</p>
+
+<example caption="Listing 8:  feather3.java">
+  1 //////////////////////////////////////////////////////////////////////
+  2 //
+  3 // Copyright (c) 2004, Andrew S. Townley
+  4 // All rights reserved.
+  5 //
+  6 // Redistribution and use in source and binary forms, with or without
+  7 // modification, are permitted provided that the following conditions
+  8 // are met:
+  9 //
+ 10 //     * Redistributions of source code must retain the above
+ 11 //     copyright notice, this list of conditions and the following
+ 12 //     disclaimer.
+ 13 //
+ 14 //     * Redistributions in binary form must reproduce the above
+ 15 //     copyright notice, this list of conditions and the following
+ 16 //     disclaimer in the documentation and/or other materials provided
+ 17 //     with the distribution.
+ 18 //
+ 19 //     * Neither the names Andrew Townley and Townley Enterprises,
+ 20 //     Inc. nor the names of its contributors may be used to endorse
+ 21 //     or promote products derived from this software without specific
+ 22 //     prior written permission.
+ 23 //
+ 24 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ 25 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ 26 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ 27 // FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ 28 // COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ 29 // INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ 30 // (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ 31 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ 32 // HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ 33 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ 34 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ 35 // OF THE POSSIBILITY OF SUCH DAMAGE.
+ 36 //
+ 37 // File:    feather3.java
+ 38 // Created: Fri Jul 30 16:26:31 IST 2004
+ 39 //
+ 40 //////////////////////////////////////////////////////////////////////
+ 41
+ 42 // now, you wouldn't do this in actual code, would you???
+ 43 import com.townleyenterprises.command.*;
+ 44
+ 45 import java.util.Iterator;
+ 46
+ 47 /**
+ 48  * This is an example of a hypothetical file archive program roughly
+ 49  * based on the UNIX tar command.  It is intended to illustrate the
+ 50  * proper use of the CommandParser and the command package.
+ 51  *
+ 52  * @version $Id: article-20041121-cli.xml,v 1.1 2004/11/21 20:37:29 atownley Exp $
+ 53  * @author <a href="mailto:xxx@xxx.xxx">Andrew S. Townley</a>
+ 54  * @since 3.0
+ 55  */
+ 56
+ 57 public class feather3
+ 58 {
+ 59     private CommandParser _parser = null;
+ 60
+ 61     private CommandOption _create = new CommandOption("create",
+ 62                     'c', false, null,
+ 63                     "create a new archive") {
+ 64         public void execute() throws Exception
+ 65         {
+ 66             String[] largs = _parser.getUnhandledArguments();
+ 67
+ 68             if(largs.length == 0)
+ 69             {
+ 70                 System.err.println("error:  refusing to create empty archive.");
+ 71                 _parser.usage();
+ 72                 System.exit(-2);
+ 73             }
+ 74
+ 75             if(_verbose.getMatched() &amp;&amp; _file.getMatched())
+ 76             {
+ 77                 System.out.println("creating archive " + _file.getArg());
+ 78             }
+ 79
+ 80             for(int i = 0; i &lt; largs.length; ++i)
+ 81             {
+ 82                 if(_verbose.getMatched())
+ 83                     System.out.println("adding " + largs[i]);
+ 84             }
+ 85
+ 86             if(_xclude.getMatched())
+ 87             {
+ 88                 if(_verbose.getMatched())
+ 89                 {
+ 90                     for(Iterator i = _xclude.getArgs().iterator(); i.hasNext();)
+ 91                     {
+ 92                         System.out.println("excluded " + i.next());
+ 93                     }
+ 94                 }
+ 95             }
+ 96         }
+ 97     };
+ 98
+ 99     private CommandOption _extract = new CommandOption(
+100                 "extract",
+101                 'x',
+102                 false,
+103                 null,
+104                 "extract files from the named archive");
+105
+106     private CommandOption _file = new CommandOption(
+107                 "file",
+108                 'f',
+109                 true,
+110                 "ARCHIVE",
+111                 "specify the name of the archive (default is stdout)");
+112
+113     private CommandOption _verbose = new CommandOption(
+114                 "verbose",
+115                 'v',
+116                 false,
+117                 null,
+118                 "print status information during execution");
+119
+120     private RepeatableCommandOption _xclude = new RepeatableCommandOption(
+121                 "exclude",
+122                 'X',
+123                 "[ FILE | DIRECTORY ]",
+124                 "exclude the named file or directory from the archive");
+125
+126     private PosixCommandOption _display = new PosixCommandOption(
+127                 "display",
+128                 true,
+129                 "DISPLAY",
+130                 "specify the display on which the output should be written");
+131
+132     private JoinedCommandOption _options = new JoinedCommandOption(
+133                 'D',
+134                 false,
+135                 "PROPERTY=VALUE[,PROPERTY=VALUE...]",
+136                 "set specific run-time properties",
+137                 true);
+138
+139     private CommandOption[] _mainopts = {
+140                 _create, _extract, _file, _verbose, _xclude };
+141
+142     private CommandOption[] _examples = { _display, _options };
+143
+144     public static void main(String[] args)
+145     {
+146         new feather3(args);
+147     }
+148
+149     private feather3(String[] args)
+150     {
+151         _parser = new CommandParser("feather", "FILE...");
+152         _parser.setExitOnMissingArg(true, -10);
+153
+154         // this is ugly and you wouldn't do this in real code,
+155         // but it serves to illustrate the method call
+156         _parser.setExtraHelpText("SEE ACTUAL SOURCE", "SEE ACTUAL SOURCE");
+157
+158         _parser.addCommandListener(
+159             new DefaultCommandListener("feather options", _mainopts));
+160         _parser.addCommandListener(
+161             new DefaultCommandListener("Example options", _examples));
+162
+163         _parser.parse(args);
+164
+165         _parser.addConstraint(
+166             new MutexOptionConstraint(-500, _create, _extract));
+167         _parser.addConstraint(
+168             new RequiresAnyOptionConstraint(-501, _file,
+169                 new CommandOption[] { _create, _extract }));
+170         _parser.addConstraint(new RequiresAnyOptionConstraint(-502,
+171             _xclude, new CommandOption[] { _create, _extract }));
+172
+173         try
+174         {
+175             _parser.executeCommands();
+176         }
+177         catch(Exception e)
+178         {
+179             e.printStackTrace();
+180             System.exit(-111);
+181         }
+182     }
+183 }
+</example>
+
+<p>
+As previously mentioned, the create command option relies on
+access to both the parser (to retrieve the arguments to
+archive in line 66) and to the other arguments (lines 75-95)
+so that it can successfully complete the task.  This means
+that it is not as encapsulated as it could otherwise be, but I
+firmly believe that it is light-years ahead of parsing the
+command line a la K&amp;R in <book
+link="http://http://cm.bell-labs.com/cm/cs/cbook/">The C
+Programming Language</book>.
+</p>
+
+<p>
+If you haven't done much with command-line parsing, this
+article may seem like overkill, but I am convinced that this
+is as close to the "right way" of doing things as I have seen.
+I started parsing the command line based on the K&amp;R
+approach, modified it again when I found <code>popt</code> and
+finally wrote my own.  Any way you do it, I would recommend
+you use a library except in the most trivial cases.  There is
+just too much code that gets copied and pasted from one
+application to the other if you don't.  Hopefully, this
+article will have at least provided you with a good exposure
+to how you can use TE-Common's <code>command</code> package to
+efficiently handle your command line interfaces.
+</p>
+
+</body>
+</article>
+</page>

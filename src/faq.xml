@@ -1,0 +1,349 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	faq.xml
+// Created:	Sat Nov 20 20:12:50 GMT 2004
+//
+// $Id: faq.xml,v 1.1 2004/11/21 20:37:22 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Frequently Asked Questions">
+<menu ref="menu.xml" active="faq"/>
+
+<faq>
+<question>
+What is TE-Code?
+</question>
+<answer>
+<p>
+TE-Code is the name of a collection of libraries available
+under a liberal BSD-derived Open Source license, originally
+written by Andrew S. Townley in Java and Python, but later
+expanded to .NET using the C# language.
+</p>
+</answer>
+</faq>
+
+<faq>
+<question>
+Why would I want to use this library?
+</question>
+<answer>
+<p>
+There are a lot of libraries out there, but I haven't been
+able to find one that solves some of the basic issues that
+this one does.  The majority of the code in this library has
+been tested in real, live production applications in use on a
+daily basis.  I actively continue to use this code where ever
+I can, so that if it breaks, it will affect me as soon
+as (and hopefully before) it affects anyone else.
+</p>
+<p>
+To get a better feel for the capabilities, see
+the <a href="docs.html">documentation</a> for some
+examples.  However, highlights of the main features of this
+library are:
+
+<dl>
+
+<dt>Command Line Argument Parsing</dt>
+<dd>
+<p>
+I spend a lot of time writing CLI applications in a variety of
+languages.  One of the C libraries that I liked best was
+<code>libpopt</code> from <a
+href="http://www.redhat.com">RedHat</a>.  When I migrated
+away from C and C++, I tried to find a version in Java that
+did what I wanted.  At the time, I found a couple of
+libraries (including <a
+href="http://www.kevinboone.com/popt_overview.html">Java
+Popt</a>, <a
+href="http://www.ddj.com/documents/s=964/ddj9602e/9602e.htm">Greg
+White's DDJ article</a> and <a
+href="http://jargs.sourceforge.net/">JArgs</a>), but none of
+them really did what I wanted.
+</p>
+<p>
+Also, as I wrote more and more of these things, I decided that
+the traditional approach to handling the command line
+arguments could be improved by applying OO techniques.
+Eventually, I applied the <a
+href="http://www.awprofessional.com/title/0201633612">Gang of
+Four</a> Command pattern and ended up
+with something which I'm finally more-or-less happy with.  I
+think that if you have to write programs to handle
+command-line arguments, you will soon appreciate the OO
+approach over using more traditional mechanisms, including the
+<a href="http://jakarta.apache.org/commons/cli/">Jakarta
+CLI</a> library.
+</p>
+</dd>
+
+<dt>Configuration Setting Handling</dt>
+<dd>
+<p>
+Another thing that I have needed with nearly every program
+I've written is a way to provide overridable configuration
+settings.  This happens all the time because there are usually
+at least 3 levels of configuration in any sizable application:
+
+<ol>
+<li>Individual user settings</li>
+<li>System-wide default values normally set during
+installation</li>
+<li>Built-in, hard-coded default values</li>
+</ol>
+</p>
+<p>
+In most programs, you want the settings available to the user
+to be the union of items 1-3, but allow them to change or
+override any settings contained in 2-3 which are appropriate.
+</p>
+<p>
+Support for this functionality has been part of the library
+from the beginning.  As of the initial .NET work and
+the 3.0.0-pre1 release, this functionality has been expanded
+and generalized allowing more control over the configuration
+settings and selective writes to either items 1 or 2.
+</p>
+</dd>
+
+<dt>Filtering and Sorting</dt>
+<dd>
+<p>
+The library also includes classes that allow you to create
+complex filters which may be applied to any of the standard
+Java Collections framework classes.  Supplied classes allow
+for logical AND, OR and NOT operations to be created based on
+either specific filter checks or on dynamic property value
+checking (at the moment, the properties are limited to one
+level, however by using the <a
+href="http://jakarta.apache.org/commons/beanutils/">Jakarta
+Commons Beanutils</a>, this limitation can be easily
+addressed).
+</p>
+<p>
+The sorting aspects allow you to order the values in the
+collection based on complex sort specifications.  When used
+with the filter classes, you can build complex queries and
+order the results in a similar manner to the facilities
+provided by SQL.  Together, these facilities provide an
+implementation of the Query Object pattern as defined by <a
+href="http://www.martinfowler.com/">Martin Fowler</a> in his
+book <book
+link="http://www.martinfowler.com/books.html#eaa">Patterns of
+Enterprise Application Architecture</book>.
+</p>
+</dd>
+
+<dt>Delimited Text File Processing</dt>
+<dd>
+<p>
+The library contains a set of classes to abstract the
+boilerplate code used to process delimited text files to allow
+the developer to concentrate on what to do with the data.
+</p>
+</dd>
+
+<dt>Persistence Layer Utilities</dt>
+<dd>
+<p>
+The notable item in this package is the <a
+href="api/com/townleyenterprises/persistence/QueryHandler.html">QueryHandler</a>
+class.  This class provides a facility similar to the DB API
+in Python allowing you to more easily execute SQL without
+having to set up all of the boilerplate code.
+</p>
+<p>
+For example, if you wanted to easily perform processing of the
+SQL query:
+<example>
+select fname, lname from customer where customer_id = ?
+</example>
+you could do something similar to the following:
+<example>
+public void findCustomerById(long cust_id)
+{
+	QueryHandler query = new QueryHandler(_myConnFactory);
+	query.addQueryListener(this);
+
+	// you would use an external source for the SQL
+	String sql = SQLProvider.get("find_customer_by_id");
+	query.execute(sql, new Object[] { new Long(cust_id) });
+}
+
+public void nextRow(QueryEvent event)
+{
+	ResultSet rs = event.getResultSet();
+	String lname = rs.getString("lname");
+	String fname = rs.getSTring("fname");
+
+	System.out.println(lname + ", " + fname);
+}
+</example>
+</p>
+<p>
+The management of the connection, the preparation of the SQL
+and the processing of the result set are all handled by the
+instance.  Again, the idea here is to reduce the amount of
+boiler-plate code you have to write as well as not having to
+worry about mapping the query parameters to the specific
+statement.
+</p>
+<p>
+Parts of this package came from earlier work with the <a
+href="http://jaxor.sourceforge.net/">Jaxor</a> persistence
+framework.  The library also has specific support for some
+earlier Jaxor releases as extensions, so as to not directly
+introduce a dependency if you don't need it (and I doubt it
+works with the current version of Jaxor, anyway).
+</p>
+</dd>
+
+<dt>Internationalization &amp; Localization (I18N &amp; L10N)
+Tools</dt>
+<dd>
+<p>
+As part of the library implementation, an idiom is provided to
+enable the efficient localization of any text messages in the
+application.  This facility goes beyond the standard Java
+Properties class capabilities, allowing you to write code as
+follows:
+<example>
+public void someMethod()
+{
+	System.out.println(Strings.get("sTitle"));
+	System.out.println(Strings.format("fSomeMessage"
+			new Object[] { "arg1", "arg2" }));
+}
+</example>
+</p>
+<p>
+This technique is based on something that I a saw in the <a
+href="http://jakarta.apache.org/tomcat/">Jakarta Tomcat</a>
+source code, but it has been expanded to use the same
+inheritance principles used by the configuration system so
+that you don't have to continually define the same strings
+over and over again for different packages.
+</p>
+</dd>
+
+<dt>General-purpose Swing Classes</dt>
+<dd>
+<p>
+The Swing capabilities consist of additional UI classes for a
+status bar and an about box along with a way to easily
+implement a background task which sends status information to
+a monitor object.  There is also a highly-extended Metal theme
+mechanism which gives much more control over the themes and
+allows the application to extend the values of the them in a
+consistent manner.
+</p>
+<p>
+Another aspect of this package is the ability to define the UI
+in terms of resources.  There is currently only one
+implementation based on property files, but the mechanism is
+general enough to be extended to XML or something else.  The
+existing implementation is based off the original Notepad
+example shipped with the first releases of Swing.
+</p>
+</dd>
+
+<dt>Project Version Information</dt>
+<dd>
+<p>
+One of the things I always try to do is include an awareness
+of version information into a project's source.  This is just
+good practice and allows you to easily identify which version
+of a product you are running.
+</p>
+<p>
+Using the idioms in the project's <code>build.xml</code> and
+the <code>Version.java.in</code> source file, you can easily
+add version tracking information into your projects.  For .NET
+projects, I have created an <a
+href="http://nant.sourceforge.net/">NAnt</a> task which
+essentially does the same thing, but without having to jump
+through quite as many hoops.
+</p>
+</dd>
+
+<dt>Run-time Application Tracing</dt>
+<dd>
+<p>
+This facility was one of the first to be added and has been
+with me for most of my career in one form or another.  The
+point of this part of the library is to allow enough
+instrumentation to be useful for run-time problem diagnosis.
+</p>
+<p>
+The main difference between TE-Trace and <a
+href="http://jakarta.apache.org/log4j">Jakarta's Log4j</a> is
+this library is focused solely on application tracing.  To me,
+application logging is a different beast altogether, and for
+that I use Log4j.  However, the key differences of TE-Trace is
+the support for the different "maturity levels" of a
+particular class.  This means that what you get initially with
+a trace level of 10 may not be what you will get after the
+code is more mature and the developer increments the maturity
+level.
+</p>
+<p>
+Another way to look at it is imagine that you had the
+<code>DEBUG</code> level of Log4j divided up into as many
+sub-levels as you needed.  The biggest problem with using only
+<code>DEBUG</code> is that after a while, there is so much
+information in the output that it becomes unusable.  I know
+you can filter the output with Log4j, but I don't think that
+you should have to do that.  The developers know which classes
+are more mature, so they should be able to indicate this fact
+during implementation.  Once this has been done, the
+user/administrator sets the output level they wish to see.
+All of the "mature" code isn't cluttering up the trace log,
+but if you want it, you can still get it by using a higher
+trace level.
+</p>
+</dd>
+
+</dl>
+</p>
+</answer>
+</faq>
+
+</page>

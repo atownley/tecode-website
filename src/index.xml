@@ -1,0 +1,183 @@
+<!--
+//////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2004, Andrew S. Townley
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 
+//     * Redistributions of source code must retain the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer.
+// 
+//     * Redistributions in binary form must reproduce the above
+//     copyright notice, this list of conditions and the following
+//     disclaimer in the documentation and/or other materials provided
+//     with the distribution.
+// 
+//     * Neither the names Andrew Townley and Townley Enterprises,
+//     Inc. nor the names of its contributors may be used to endorse
+//     or promote products derived from this software without specific
+//     prior written permission.  
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// File:	index.xml
+// Created:	Sat Nov 20 20:08:31 GMT 2004
+//
+// $Id: index.xml,v 1.1 2004/11/21 20:37:36 atownley Exp $
+//
+//////////////////////////////////////////////////////////////////////
+-->
+
+<page title="Home">
+<menu ref="menu.xml" active="home"/>
+
+<article date="21-Nov-2004" author="atownley" class="latest">
+<title>
+Finally!  A New Look
+</title>
+<body>
+<p>
+After entirely too long, I managed to get around to giving the
+site a bit of a makeover.  Hopefully, there will now be a lot
+more information here along with more updates.
+</p>
+</body>
+</article>
+
+<article>
+<title>
+What is TE-Code?
+</title>
+<body>
+<p>
+TE-Code is a collection of Open Source Software available under the
+revised <a
+href="http://www.opensource.org/licenses/bsd-license.php">BSD
+License</a>.  The collection is divided up into categories which
+address some recurring problems I have seen in delivering software
+over the past 10 years.
+</p>
+<p>
+The library contains the following packages which are available
+independently for various technologies.
+</p>
+
+<table border="1" cellpadding="3" cellspacing="0">
+<tr>
+<th>Package</th>
+<th>Description</th>
+<th>Java</th>
+<th>.NET</th>
+<th>Python</th>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Command</td>
+<td>Command line argument parsing</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Common</td>
+<td>Configuration settings management</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Filter</td>
+<td>General-purpose filtering and sorting</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">IO</td>
+<td>Utilities for processing text files</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Persistence</td>
+<td>Classes to make processing database queries simpler</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Swing</td>
+<td>Generic About box, Status bar and UI builders</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Tool</td>
+<td>Miscellaneous tools and utilities</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">Trace</td>
+<td>Run-time code tracing at a finer level of control than
+that provided by <a
+href="http://jakarta.apache.org/log4j/">Log4j</a>.</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center"><img src="images/check.gif"/></td>
+</tr>
+
+<!--
+<li>Fitering and sorting standard collections</li>
+<li>Application properties/settings management</li>
+<li>Database persistence configuration & support</li>
+<li>GUI programming utility classes</li>
+</ul>
+</td>
+<td align="center"><img src="images/check.gif"/></td>
+<td align="center">partial</td>
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td class="nobreak" valign="top">te-trace</td>
+<td>A library for code instrumentation simiar in spirt to <a
+href="http://jakarta.apache.org/log4j/">Log4j</a>, but is
+intended to provide finer control over the
+<code>DEBUG</code> level of output.</td>
+</td>
+<td align="center"><img src="images/check.gif"></td>
+<td>&nbsp;</td>
+<td align="center"><img src="images/check.gif"></td>
+</tr>
+-->
+</table>
+</body>
+</article>
+
+</page>

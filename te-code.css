@@ -1,0 +1,138 @@
+a:link { color: #7590ae; }
+a:visited { color: #ee90ae; }
+a:visited { color: #ee6c71; }
+.mocha { color: #e9decf; }
+.darkbrown { color: #4a422e; }
+.latte { color: #fcf2e7; }
+.taglink:visited, .navlink:visited, .brownlink { color: #9e8e71; }
+.whitelink { color: #000000; }
+.navlink:link, .taglink:link, body, .maintext { color: #554a35; } 
+/* .taglink:visited, .taglink:link, .navlink:link, body, .maintext { color: #554a35; } */
+
+body
+{
+	font-family: sans-serif;
+}
+
+dt
+{
+	font-weight: bold;
+}
+
+.aaa
+{
+	background-color: #e9decf;
+	text-align: right;
+	border-bottom: 1px solid #4a422e;
+	padding: 3 3 3 3;
+#	width: 100%;
+}
+
+.content
+{
+	padding: 5 5 0 0;
+}
+
+.article
+{
+	border-bottom: 1px solid #4a422e;
+	padding-bottom: 5;
+}
+
+.editor, .caption
+{
+	font-style: italic;
+	margin: 0 .5in 0 .5in; 
+}
+
+.editor
+{
+	font-size: small;
+}
+
+.caption
+{
+	padding-top: 5;
+	padding-bottom: 5;
+	text-align: center;
+	font-weight: bold;
+}
+
+.latest
+{
+	background-color: #FFFFDD;
+	border-top: 1px solid #4a422e;
+	border-bottom: 1px solid #4a422e;
+}
+
+.tagline
+{
+	float: left;
+	background-color: #e9decf;
+}
+
+.nav
+{
+#	height: 100%;
+	width: 4cm;
+	background-color: #fcf2e7;
+	border-left: 1px solid #4a422e;
+}
+
+.menu, .active, .menu
+{
+	padding: 3 3 3 3;
+}
+
+.navlink, .brownlink
+{
+	text-decoration: underline;
+}
+
+.active
+{
+	font-weight: bold;
+	color: white;
+	background-color: #554a35;
+}
+
+.copyright
+{
+	font-size: 60%;
+	text-align: center;
+	margin-top: 5;
+}
+
+.taglink:hover, .navlink:hover
+{
+	font-style: italic;
+}
+
+.navlink:hover
+{
+	color: #c2ae86;
+}
+
+.nobreak
+{
+	white-space: nowrap;
+}
+
+.example
+{
+	border: 1px solid #4a422e;
+	padding: 3;
+	background-color: #fcf2e7;
+        font-family:  "Lucidia Console", "Lucidia Typewriter",
+"Courier", monospace;
+        margin-left: +.2in;
+        margin-right: +.2in;
+        font-size: small;
+	white-space: pre;
+}
+
+code
+{
+        font-family:  "Lucidia Console", "Lucidia Typewriter",
+"Courier", monospace;
+}
