@@ -38,7 +38,7 @@
 // File:	index.xml
 // Created:	Sat Nov 20 20:08:16 GMT 2004
 //
-// $Id: news.xml,v 1.1 2004/11/21 20:37:36 atownley Exp $
+// $Id: news.xml,v 1.2 2004/11/21 23:39:34 atownley Exp $
 //
 //////////////////////////////////////////////////////////////////////
 -->
@@ -123,6 +123,32 @@ which will apply in stand-alone GUI applications, batch
 processing and in web applications.  Watch this space, but
 I'll warn you now... <strong>the code is very much a work in
 progress</strong>.
+</p>
+</body>
+</article>
+
+<article date="19-Jul-2004" author="atownley">
+<title>
+Internal Release of te-common.NET-3.0.0-pre2
+</title>
+<body>
+<p>
+Second controlled release.  Making progress towards initial
+stability, but still a ways to go.
+</p>
+</body>
+</article>
+
+<article date="28-Jun-2004" author="atownley">
+<title>
+Internal Release of te-common.NET-3.0.0-pre1
+</title>
+<body>
+<p>
+This is the first, very controlled, release of the .NET edition.
+I'm not putting it up on SourceForge yet, because I don't think
+it's ready for a wider audience.  We'll see how it goes with my
+internal customers.
 </p>
 </body>
 </article>
